@@ -1,5 +1,5 @@
 use actix_web::{App, HttpServer};
-use controllers::index::{get_challenges_detail, hello};
+use controllers::challenge_controller::{get_challenges_detail, hello};
 
 mod controllers;
 mod models;

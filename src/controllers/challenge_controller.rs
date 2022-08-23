@@ -1,23 +1,20 @@
-use actix_web::{get, web, HttpResponse, Responder, Result};
+use crate::{
+    response_models::base_response_model::BaseResponseModel,
+    view_models::{
+        create_challenge_view_model::CreateChallengeViewModel,
+        validator::{ModelValidator, Validity},
+    },
+};
+use actix_web::{post, web, HttpResponse, Responder};
 
-use crate::models::challenge_view_model::ChallengeViewModel;
+#[post("api/challenges")]
+pub async fn create_challenge(challenge: web::Json<CreateChallengeViewModel>) -> impl Responder {
+    if let Validity::Invalid(err) = challenge.validate() {
+        let response_message = BaseResponseModel::<'_, ()>::from_err_message(err);
+        let json = serde_json::to_string(&response_message).unwrap();
+        return HttpResponse::BadRequest().body(json);
+    }
 
-#[get("/")]
-pub async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world")
-}
-
-#[get("/challenges")]
-pub async fn get_challenges() -> impl Responder {
-    HttpResponse::Ok().body("")
-}
-
-#[get("challenges/{challengeId}")]
-pub async fn get_challenges_detail() -> Result<impl Responder> {
-    let challenge = ChallengeViewModel {
-        description: "Description".to_string(),
-        title: "Title".to_string(),
-    };
-
-    Ok(web::Json(challenge))
+    HttpResponse::Ok()
+        .body(serde_json::to_string(&BaseResponseModel::<'_, ()>::empty_success()).unwrap())
 }

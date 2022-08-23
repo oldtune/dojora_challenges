@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'dojora'",
+      "cargo": {
+        "args": ["build", "--bin=dojora", "--package=dojora"],
+        "filter": {
+          "name": "dojora",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'dojora'",
+      "cargo": {
+        "args": ["test", "--no-run", "--bin=dojora", "--package=dojora"],
+        "filter": {
+          "name": "dojora",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

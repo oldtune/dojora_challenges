@@ -1,10 +1,14 @@
 use actix_web::{App, HttpServer};
 use controllers::challenge_controller::create_challenge;
 
+#[macro_use]
+extern crate diesel;
+
 mod controllers;
-mod events;
 mod helpers;
+mod model;
 mod response_models;
+mod schema;
 mod view_models;
 
 #[actix_web::main]

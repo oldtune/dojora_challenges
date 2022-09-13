@@ -7,20 +7,13 @@ pub struct BaseResponseModel<'a, T>
 where
     T: Serialize,
 {
-    #[serde(rename(serialize="validationResult"))]
+    #[serde(rename(serialize = "validationResult"))]
     pub validation_result: Option<ErrorMessages<'a>>,
     #[serde(rename(serialize = "data"))]
-    pub data: Option<ResponseData<T>>,
+    pub data: Option<T>,
     #[serde(rename(serialize = "status"))]
     pub status: ResponseStatus,
-}
-
-#[derive(Serialize)]
-pub struct ResponseData<T>
-where
-    T: Serialize,
-{
-    data: T,
+    pub errors: Option<ErrorMessages<'a>>,
 }
 
 #[derive(Serialize)]
@@ -36,8 +29,9 @@ where
     pub fn from_err_message(error: ErrorMessages<'a>) -> Self {
         Self {
             data: None,
-            validation_result: Some(error),
+            validation_result: None,
             status: ResponseStatus::Ok,
+            errors: Some(error),
         }
     }
 
@@ -46,6 +40,7 @@ where
             validation_result: None,
             data: None,
             status: ResponseStatus::Ok,
+            errors: None,
         }
     }
 
@@ -54,6 +49,25 @@ where
             validation_result: None,
             data: None,
             status: ResponseStatus::Failed,
+            errors: None,
+        }
+    }
+
+    pub fn validation_error(error: ErrorMessages<'a>) -> Self {
+        Self {
+            validation_result: Some(error),
+            data: None,
+            status: ResponseStatus::Failed,
+            errors: None,
+        }
+    }
+
+    pub fn success(data: T) -> Self {
+        Self {
+            validation_result: None,
+            data: Some(data),
+            status: ResponseStatus::Ok,
+            errors: None,
         }
     }
 }

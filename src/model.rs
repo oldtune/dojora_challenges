@@ -6,5 +6,5 @@ use diesel::{Insertable, Queryable};
 pub struct Challenge {
     pub id: uuid::Uuid,
     pub title: String,
-    pub description: String,
+    pub description: Option<String>,
 }

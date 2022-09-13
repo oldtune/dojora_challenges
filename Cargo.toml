@@ -11,11 +11,13 @@ serde_json = "1.0.83"
 serde = { version = "1.0.143", features = ["derive"] }
 dotenv = "0.15.0"
 uuid = { version = "0.8.2", features = ["v4"] }
-diesel = { version = "1.4.4", features = [
+actix-cors = "0.6.2"
+diesel = { version = "2.0.0", features = [
     "postgres",
     "numeric",
     "num-integer",
     "num-bigint",
     "num-traits",
-    "uuidv07",
+    "uuid",
 ] }
+futures-util = "0.3.24"

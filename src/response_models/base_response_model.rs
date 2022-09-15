@@ -30,7 +30,7 @@ where
         Self {
             data: None,
             validation_result: None,
-            status: ResponseStatus::Ok,
+            status: ResponseStatus::Failed,
             errors: Some(error),
         }
     }

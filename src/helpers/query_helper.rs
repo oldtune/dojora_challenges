@@ -1,20 +1,21 @@
+use diesel::pg::Pg;
 use diesel::prelude::*;
 use diesel::query_builder::{Query, QueryFragment};
 use diesel::query_dsl::LoadQuery;
 use diesel::sql_types::BigInt;
-use diesel::{pg::Pg, sql_types::Integer};
 
 pub trait Paginate: Sized {
     fn paginate(self, page: i64, per_page: i64) -> Paginated<Self>;
 }
 
 impl<T> Paginate for T
-where T: QueryDsl {
+where
+    T: QueryDsl,
+{
     fn paginate(self, page: i64, per_page: i64) -> Paginated<Self> {
         Paginated {
             query: self,
             offset: page * per_page,
-            page,
             per_page,
         }
     }
@@ -23,7 +24,6 @@ where T: QueryDsl {
 #[derive(Debug, Clone, Copy, QueryId)]
 pub struct Paginated<T> {
     query: T,
-    page: i64,
     per_page: i64,
     offset: i64,
 }

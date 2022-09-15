@@ -1,9 +1,10 @@
 use crate::diesel::RunQueryDsl;
 use crate::helpers::query_helper::{Paginate, Paginated};
 use crate::model::Challenge;
+use crate::response_models::base_response_model;
 use crate::schema::challenge;
 use crate::schema::challenge::dsl::*;
-use crate::view_models::challenge_view_model::ChallengeViewModel;
+use crate::view_models::challenge_view_model::{self, ChallengeViewModel};
 use crate::view_models::paging_model::PagingModel;
 use crate::{
     response_models::base_response_model::BaseResponseModel,
@@ -19,6 +20,7 @@ use diesel::query_builder::AsQuery;
 use diesel::QueryDsl;
 use diesel::{pg::PgConnection, Connection};
 use std::env;
+use std::str::FromStr;
 
 #[post("api/challenges")]
 pub async fn create_challenge(
@@ -62,6 +64,29 @@ pub async fn get_challenges(paging_model: web::Json<PagingModel>) -> Result<impl
         .collect();
 
     Ok(web::Json(BaseResponseModel::success(view_model)))
+}
+
+#[get("api/challenge/{challenge_id}")]
+pub async fn get_challenge_detail(challenge_id: String) -> impl Responder {
+    let mut connection = establish_connection();
+    let uuid_parsed = uuid::Uuid::from_str(&challenge_id as &str);
+    if uuid_parsed.is_err() {
+        return web::Json(BaseResponseModel::from_err_message(vec![
+            "Invalid id format",
+        ]));
+    }
+
+    let individual_challenge = challenge.find(uuid_parsed.unwrap()).first(&mut connection);
+
+    match individual_challenge {
+        Err(_) => web::Json(BaseResponseModel::from_err_message(vec![
+            "Failed to find challenge",
+        ])),
+        Ok(found_challenge) => {
+            let challenge_response = ChallengeViewModel::new(found_challenge);
+            web::Json(BaseResponseModel::success(challenge_response))
+        }
+    }
 }
 
 fn establish_connection() -> PgConnection {

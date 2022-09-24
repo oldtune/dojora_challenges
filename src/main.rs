@@ -5,7 +5,7 @@ use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 use controllers::challenge_controller::{create_challenge, get_challenge_detail, get_challenges};
 use diesel::{
     r2d2::{ConnectionManager, Pool},
-    Connection, PgConnection,
+    PgConnection,
 };
 use dotenv::dotenv;
 use helpers::db_pool::DbPool;

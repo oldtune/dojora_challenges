@@ -32,7 +32,6 @@ pub async fn create_challenge(
         return HttpResponse::BadRequest().body(json);
     }
 
-    //insert into db
     let mut connection = db_pool.get().unwrap();
     let new_challenge = Challenge {
         title: challenge_to_create.title.clone(),
@@ -58,7 +57,7 @@ pub async fn create_challenge(
 #[get("api/challenges")]
 pub async fn get_challenges(
     db_pool: Data<DbPool>,
-    paging_model: web::Json<PagingModel>,
+    paging_model: web::Query<PagingModel>,
 ) -> Result<impl Responder> {
     let mut connection = db_pool.get().unwrap();
     let challenges = challenge

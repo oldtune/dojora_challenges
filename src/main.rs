@@ -9,7 +9,7 @@ use diesel::{
 };
 
 use dojora::run;
-use dotenv::dotenv;
+// use dotenv::dotenv;
 use helpers::db_pool::DbPool;
 
 #[macro_use]
@@ -47,13 +47,13 @@ async fn main() -> std::io::Result<()> {
     run()?.await
 }
 
-fn init_connection_pool(pool_size: u32) -> DbPool {
-    let conn_string = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let conn_manager = ConnectionManager::<PgConnection>::new(&conn_string);
-    let pool = Pool::builder()
-        .test_on_check_out(true)
-        .max_size(pool_size)
-        .build(conn_manager)
-        .unwrap();
-    pool
-}
+// fn init_connection_pool(pool_size: u32) -> DbPool {
+//     let conn_string = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+//     let conn_manager = ConnectionManager::<PgConnection>::new(&conn_string);
+//     let pool = Pool::builder()
+//         .test_on_check_out(true)
+//         .max_size(pool_size)
+//         .build(conn_manager)
+//         .unwrap();
+//     pool
+// }

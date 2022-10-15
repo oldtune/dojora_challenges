@@ -1,15 +1,17 @@
-use std::time::Duration;
+use reqwest::StatusCode;
 
 #[tokio::test]
 async fn health_check_works() {
     spawn_app();
 
-    tokio::time::sleep(Duration::from_secs(3)).await?;
-    let response = reqwest::get("http://localhost:8080/health_check").await?;
+    let response = reqwest::get("http://localhost:8080/health_check")
+        .await
+        .expect("Failed to make a request");
     assert_eq!(response.content_length(), Some(0));
+    assert_eq!(response.status(), StatusCode::OK);
 }
 
-pub async fn spawn_app() {
+pub fn spawn_app() {
     let server = dojora::run().expect("Failed to bind address");
 
     tokio::spawn(server);

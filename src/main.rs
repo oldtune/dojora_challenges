@@ -5,8 +5,10 @@ use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 use controllers::challenge_controller::{create_challenge, get_challenge_detail, get_challenges};
 use diesel::{
     r2d2::{ConnectionManager, Pool},
-    Connection, PgConnection,
+    PgConnection,
 };
+
+use dojora::run;
 use dotenv::dotenv;
 use helpers::db_pool::DbPool;
 
@@ -22,26 +24,27 @@ mod view_models;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenv().ok();
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-    let connection_pool = init_connection_pool(30);
-    HttpServer::new(move || {
-        let cors = Cors::default()
-            .allow_any_header()
-            .allow_any_method()
-            .allow_any_origin();
-        let app = App::new()
-            .app_data(Data::new(connection_pool.clone()))
-            .wrap(Logger::new("%a %{User-Agent}i"))
-            .wrap(cors)
-            .service(create_challenge)
-            .service(get_challenges)
-            .service(get_challenge_detail);
-        app
-    })
-    .bind(("0.0.0.0", 8080))?
-    .run()
-    .await
+    // dotenv().ok();
+    // env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    // let connection_pool = init_connection_pool(30);
+    // HttpServer::new(move || {
+    //     let cors = Cors::default()
+    //         .allow_any_header()
+    //         .allow_any_method()
+    //         .allow_any_origin();
+    //     let app = App::new()
+    //         .app_data(Data::new(connection_pool.clone()))
+    //         .wrap(Logger::new("%a %{User-Agent}"))
+    //         .wrap(cors)
+    //         .service(create_challenge)
+    //         .service(get_challenges)
+    //         .service(get_challenge_detail);
+    //     app
+    // })
+    // .bind(("0.0.0.0", 8080))?
+    // .run()
+    // .await
+    run()?.await
 }
 
 fn init_connection_pool(pool_size: u32) -> DbPool {

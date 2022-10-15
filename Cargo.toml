@@ -1,9 +1,16 @@
 [package]
 name = "dojora"
+authors = ["Quack Quack <quackablequackquack@gmail.com>"]
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+path = "src/lib.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+path = "src/main.rs"
+name = "dojora"
 
 [dependencies]
 actix-web = "4.1.0"
@@ -12,6 +19,8 @@ serde = { version = "1.0.143", features = ["derive"] }
 dotenv = "0.15.0"
 uuid = { version = "0.8.2", features = ["v4"] }
 actix-cors = "0.6.2"
+reqwest = "0.11.12"
+tokio = { version = "1.21.2", features = ["full"] }
 diesel = { version = "2.0.0", features = [
     "postgres",
     "numeric",

@@ -1,0 +1,7 @@
+running_port = 8080
+[database_settings]
+host = "localhost"
+port = 5432
+database_name = "dojora"
+username = "admin"
+password = "123456"

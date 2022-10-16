@@ -380,6 +380,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "claim"
+version = "0.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "abfdec537e3111c80711b3b4a437a55c2d345917caf5ac72c7915b2862d01743"
+
+[[package]]
 name = "codespan-reporting"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -603,6 +609,7 @@ version = "0.1.0"
 dependencies = [
  "actix-cors",
  "actix-web",
+ "claim",
  "config",
  "dotenv",
  "env_logger",

@@ -33,3 +33,6 @@ sqlx = { version = "0.6.2", features = [
 ] }
 config = "0.13.2"
 thiserror = "1.0.37"
+
+[dev-dependencies]
+claim = "*"

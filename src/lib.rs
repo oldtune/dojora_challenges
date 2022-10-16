@@ -1,13 +1,11 @@
-use std::path::Path;
-
 use actix_cors::Cors;
 use actix_web::{dev::Server, middleware::Logger, web, App, HttpResponse, HttpServer};
 mod routes;
 use config::{Config, ConfigError, File};
 use configs::global::AppConfig;
 use routes::challenge::get_all_challenges;
-use tokio::sync::broadcast::error;
 mod configs;
+mod domains;
 
 pub fn run() -> std::io::Result<Server> {
     let server = HttpServer::new(move || {
@@ -42,4 +40,23 @@ pub async fn health_check() -> actix_web::HttpResponse {
 
 pub fn get_route(route: &str) -> String {
     format!("{}{}", "api/", route)
+}
+
+#[cfg(test)]
+pub mod test {
+    use crate::{get_configurations, get_route};
+
+    #[test]
+    pub fn get_route_shoud_return_correct_route() {
+        assert_eq!(get_route("hello"), "api/hello");
+    }
+
+    #[test]
+    pub fn get_configurations_works() {
+        let config = get_configurations("src/config.toml");
+        match config {
+            Ok(_) => (),
+            Err(err) => panic!("{}", err),
+        }
+    }
 }

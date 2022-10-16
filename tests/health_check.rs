@@ -4,7 +4,7 @@ use reqwest::StatusCode;
 async fn health_check_works() {
     spawn_app();
 
-    let response = reqwest::get("http://localhost:8080/health_check")
+    let response = reqwest::get("http://localhost:8080/api/health_check")
         .await
         .expect("Failed to make a request");
     assert_eq!(response.content_length(), Some(0));

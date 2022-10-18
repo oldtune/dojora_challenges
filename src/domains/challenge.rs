@@ -1,3 +1,6 @@
+use serde::Serialize;
+
+#[derive(Serialize)]
 pub struct Challenge {
     pub id: uuid::Uuid,
     pub title: String,

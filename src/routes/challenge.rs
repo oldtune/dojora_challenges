@@ -5,14 +5,18 @@ use actix_web::{
 use anyhow::Context;
 use reqwest::StatusCode;
 use serde::Deserialize;
+use serde_json::json;
 use sqlx::PgPool;
 
-use crate::{domains::challenge::Challenge, misc};
+use crate::{
+    domains::challenge::{self, Challenge},
+    misc,
+};
 
 #[derive(Debug, thiserror::Error)]
 pub enum GetAllChallengeError {
     #[error(transparent)]
-    Any(anyhow::Error),
+    Any(#[from] anyhow::Error),
 }
 
 impl ResponseError for GetAllChallengeError {
@@ -24,7 +28,10 @@ impl ResponseError for GetAllChallengeError {
 pub async fn get_all_challenges(
     db_pool: Data<PgPool>,
 ) -> Result<HttpResponse, GetAllChallengeError> {
-    Ok(HttpResponse::Ok().finish())
+    let challenges = query_all_challenge(db_pool.get_ref())
+        .await
+        .context("Failed to get challenges from db")?;
+    Ok(HttpResponse::Ok().json(challenges))
 }
 
 pub async fn query_all_challenge(db_pool: &PgPool) -> Result<Vec<Challenge>, sqlx::Error> {

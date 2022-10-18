@@ -12,7 +12,7 @@ async fn health_check_works() {
 }
 
 pub fn spawn_app() {
-    let server = dojora::run().expect("Failed to bind address");
+    // let server = dojora::run().expect("Failed to bind address");
 
-    tokio::spawn(server);
+    // tokio::spawn(server);
 }

@@ -3,11 +3,14 @@ use actix_web::{dev::Server, middleware::Logger, web, App, HttpResponse, HttpSer
 mod routes;
 use config::{Config, ConfigError, File};
 use configs::global::AppConfig;
-use routes::challenge::get_all_challenges;
+use routes::challenge::{add_new_challenge, get_all_challenges};
+use sqlx::{postgres::PgPoolOptions, PgPool};
 mod configs;
 mod domains;
+mod misc;
 
-pub fn run() -> std::io::Result<Server> {
+pub fn run(db_pool: PgPool) -> std::io::Result<Server> {
+    let data_db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         let cors = Cors::default()
             .allow_any_header()
@@ -17,7 +20,9 @@ pub fn run() -> std::io::Result<Server> {
             .wrap(Logger::new("%a %{User-Agent}"))
             .wrap(cors)
             .route(&get_route("health_check"), web::get().to(health_check))
-            .route(&get_route("challenges"), web::get().to(get_all_challenges));
+            .route(&get_route("challenges"), web::get().to(get_all_challenges))
+            .route(&get_route("challenges"), web::post().to(add_new_challenge))
+            .app_data(data_db_pool.clone());
         app
     })
     .bind(("localhost", 8080))?
@@ -59,4 +64,13 @@ pub mod test {
             Err(err) => panic!("{}", err),
         }
     }
+}
+
+pub async fn make_db_pool(connection_string: &str) -> Result<PgPool, sqlx::Error> {
+    let connection_pool = PgPoolOptions::new()
+        .max_connections(8)
+        .connect(connection_string)
+        .await?;
+
+    Ok(connection_pool)
 }

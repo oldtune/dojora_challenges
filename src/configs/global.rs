@@ -2,15 +2,24 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct AppConfig {
-    database_settings: DbConfig,
-    running_port: u16,
+    pub database_settings: DbConfig,
+    pub running_port: u16,
 }
 
 #[derive(Deserialize)]
 pub struct DbConfig {
-    host: String,
-    port: u16,
-    database_name: String,
-    username: String,
-    password: String,
+    pub host: String,
+    pub port: u16,
+    pub database_name: String,
+    pub username: String,
+    pub password: String,
+}
+
+impl DbConfig {
+    pub fn as_connection_string(&self) -> String {
+        format!(
+            "postgres://{}:{}@{}:{}/{}",
+            self.username, self.password, self.host, self.port, self.database_name
+        )
+    }
 }

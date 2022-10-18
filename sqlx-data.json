@@ -1,0 +1,54 @@
+{
+  "db": "PostgreSQL",
+  "6d5e4f203271f6f065a52083741d5ed48f52fb8959943f3a30f31cc72a86b878": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "description",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 3,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT * FROM challenge"
+  },
+  "a2c835da708c48a8ca625499654c9284835c1c294b4ab060d40389deaa6a79e4": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO CHALLENGE (ID, TITLE, DESCRIPTION, CREATED_AT)\n        VALUES ($1, $2, $3, $4)"
+  }
+}

@@ -5,6 +5,7 @@ pub struct Challenge {
     pub id: uuid::Uuid,
     pub title: String,
     pub description: String,
+    #[serde(rename="createdAt")]
     pub created_at: i64,
 }
 

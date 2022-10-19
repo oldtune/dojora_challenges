@@ -5,7 +5,6 @@ use actix_web::{
 use anyhow::Context;
 use reqwest::StatusCode;
 use serde::Deserialize;
-use serde_json::json;
 use sqlx::PgPool;
 
 use crate::{

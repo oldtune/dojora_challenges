@@ -1,1 +1,2 @@
-pub mod challenge;
+pub mod challenge_route;
+pub mod suggestion_route;

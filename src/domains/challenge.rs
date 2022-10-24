@@ -34,9 +34,9 @@ pub struct ChallengeTitle(String);
 
 impl ChallengeTitle {
     pub fn new(str: &str) -> Result<Self, String> {
-        if str.len() < 10 {
-            return Err("Title must be more than 10 characters".to_string());
-        }
+        // if str.len() < 10 {
+        //     return Err("Title must be more than 10 characters".to_string());
+        // }
 
         Ok(ChallengeTitle(str.to_string()))
     }
@@ -78,5 +78,16 @@ impl FromStr for ChallengeTitle {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Self::new(s.into())
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::ChallengeTitle;
+
+    #[test]
+    fn cannot_create_challenge_title_less_than_10_char() {
+        let challenge_title = ChallengeTitle::new("hello");
+        assert!(challenge_title.is_err())
     }
 }

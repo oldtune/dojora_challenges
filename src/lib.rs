@@ -3,7 +3,7 @@ use actix_web::{dev::Server, middleware::Logger, web, App, HttpResponse, HttpSer
 mod routes;
 use config::{Config, ConfigError, File};
 use configs::global::AppConfig;
-use routes::challenge::{add_new_challenge, get_all_challenges};
+use routes::challenge_route::{add_new_challenge, get_all_challenges};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 mod configs;
 mod domains;

@@ -1,5 +1,20 @@
 {
   "db": "PostgreSQL",
+  "59e88c48cf78f823968d389c67287b90b5e28f45f27f150e6721e18009f05c9a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "INSERT INTO suggestion (id, title, description, created_at) values($1,$2,$3,$4)"
+  },
   "6d5e4f203271f6f065a52083741d5ed48f52fb8959943f3a30f31cc72a86b878": {
     "describe": {
       "columns": [

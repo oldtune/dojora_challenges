@@ -34,9 +34,9 @@ pub struct ChallengeTitle(String);
 
 impl ChallengeTitle {
     pub fn new(str: &str) -> Result<Self, String> {
-        // if str.len() < 10 {
-        //     return Err("Title must be more than 10 characters".to_string());
-        // }
+        if str.len() < 10 {
+            return Err("Title must be more than 10 characters".to_string());
+        }
 
         Ok(ChallengeTitle(str.to_string()))
     }

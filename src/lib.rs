@@ -9,6 +9,8 @@ use sqlx::{postgres::PgPoolOptions, PgPool};
 mod configs;
 mod domains;
 mod misc;
+mod persistent;
+mod request;
 
 pub fn run(db_pool: PgPool) -> std::io::Result<Server> {
     let data_db_pool = web::Data::new(db_pool);
@@ -60,7 +62,7 @@ pub mod test {
 
     #[test]
     pub fn get_configurations_works() {
-        let config = get_configurations("src/config.toml");
+        let config = get_configurations("config.toml");
         match config {
             Ok(_) => (),
             Err(err) => panic!("{}", err),

@@ -1,5 +1,6 @@
+use crate::persistent::suggestion_persistent;
 use crate::{
-    domains::suggestion::{Suggestion, SuggestionDescription},
+    domains::suggestion::{Suggestion, SuggestionDescription, SuggestionTitle},
     misc,
 };
 use actix_web::{
@@ -41,46 +42,32 @@ pub async fn make_suggestion(
     let suggestion_desc = SuggestionDescription::new(new_suggestion.description)
         .map_err(|err| InsertSuggestionError::Validation(err))?;
 
+    let suggestion_title = SuggestionTitle::new(new_suggestion.title)
+        .map_err(|err| InsertSuggestionError::Validation(err))?;
+
     let suggestion = Suggestion::new(
         uuid::Uuid::new_v4(),
-        new_suggestion.title,
+        suggestion_title,
         suggestion_desc,
         misc::time::get_unix_timestamp(chrono::Utc::now()),
     );
 
-    insert_suggestion(db_pool.get_ref(), suggestion)
+    suggestion_persistent::insert_suggestion(db_pool.get_ref(), suggestion)
         .await
         .context("Failed to insert suggestion into db")?;
 
     Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn insert_suggestion(
-    db_pool: &PgPool,
-    new_suggestion: Suggestion,
-) -> Result<(), sqlx::Error> {
-    sqlx::query!(
-        r#"INSERT INTO suggestion (id, title, description, created_at) values($1,$2,$3,$4)"#,
-        new_suggestion.id,
-        new_suggestion.title,
-        new_suggestion.description.as_ref(),
-        new_suggestion.created_at,
-    )
-    .execute(db_pool)
-    .await?;
-
-    Ok(())
-}
-
-pub async fn view_list_suggestion() -> Result<HttpResponse, String> {
-todo!() 
-}
-
-pub async fn view_suggestion(id: uuid::Uuid) -> Result<HttpResponse, anyhow::Error> {
+pub async fn view_list_suggestion() -> Result<HttpResponse, ()> {
     todo!()
 }
 
-pub async fn vote_suggestion(id: uuid::Uuid) -> Result<HttpResponse, String> {
+pub async fn view_suggestion(id: uuid::Uuid) -> Result<HttpResponse, ()> {
+    todo!()
+}
+
+pub async fn vote_suggestion(id: uuid::Uuid) -> Result<HttpResponse, ()> {
     //transaction here
     todo!()
 }

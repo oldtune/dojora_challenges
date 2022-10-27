@@ -1,6 +1,8 @@
-FROM rust:latest
-WORKDIR /app
-RUN apt update && apt install lld clang -y
+FROM rust:latest as builder
+WORKDIR /usr/src/app
 COPY . .
-RUN cargo build --release
-ENTRYPOINT ["./target/release/dojora"]
+RUN cargo install --path .
+
+FROM alpine:latest
+COPY --from=builder /usr/local/cargo/bin/dojora /usr/local/bin/dojora
+CMD ["dojora"]

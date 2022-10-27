@@ -1,7 +1,4 @@
-use crate::{
-    persistent::challenge_persistent,
-    request::paging::{Paging, PagingWithKeyword},
-};
+use crate::{persistent::challenge_persistent, request::paging::PagingWithKeyword};
 use actix_web::{
     web::{self, Data},
     HttpResponse, ResponseError,

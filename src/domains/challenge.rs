@@ -1,7 +1,7 @@
-use std::{error::Error, str::FromStr};
+use std::str::FromStr;
 
 use serde::Serialize;
-use sqlx::{database::HasValueRef, Database, Decode, Encode, FromRow};
+use sqlx::FromRow;
 
 #[derive(Serialize, FromRow)]
 #[serde(rename_all = "camelCase")]
@@ -28,12 +28,6 @@ impl Challenge {
     }
 }
 
-// impl<'r> FromRow<'r, PgRow> for Challenge {
-//     fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
-
-//     }
-// }
-
 #[derive(Serialize, sqlx::Type)]
 #[sqlx(transparent)]
 pub struct ChallengeTitle(String);
@@ -54,18 +48,6 @@ impl AsRef<str> for ChallengeTitle {
         return &self.0;
     }
 }
-
-// impl<'r, DB: Database> Decode<'r, DB> for ChallengeTitle
-// where
-//     &'r str: Decode<'r, DB>,
-// {
-//     fn decode(
-//         value: <DB as HasValueRef<'r>>::ValueRef,
-//     ) -> Result<ChallengeTitle, Box<dyn Error + 'static + Send + Sync>> {
-//         let value = <&str as Decode<DB>>::decode(value)?;
-//         Ok(value.parse()?)
-//     }
-// }
 
 impl FromStr for ChallengeTitle {
     type Err = String;
@@ -89,18 +71,6 @@ impl ChallengeDescription {
         Ok(Self { 0: string })
     }
 }
-
-// impl<'r, DB: Database> Decode<'r, DB> for ChallengeDescription
-// where
-//     &'r str: Decode<'r, DB>,
-// {
-//     fn decode(
-//         value: <DB as HasValueRef<'r>>::ValueRef,
-//     ) -> Result<ChallengeDescription, Box<dyn Error + 'static + Send + Sync>> {
-//         let value = <&str as Decode<DB>>::decode(value)?;
-//         Ok(value.parse()?)
-//     }
-// }
 
 impl FromStr for ChallengeDescription {
     type Err = String;

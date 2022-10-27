@@ -26,3 +26,11 @@ impl PageSize {
         self.0
     }
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PagingWithKeyword {
+    pub keyword: Option<String>,
+    pub page_index: u8,
+    pub page_size: u8,
+}

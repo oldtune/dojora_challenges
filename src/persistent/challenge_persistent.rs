@@ -1,4 +1,4 @@
-use sqlx::PgPool;
+use sqlx::{PgPool, Postgres, QueryBuilder};
 
 use crate::domains::challenge::Challenge;
 
@@ -22,15 +22,38 @@ pub async fn query_all_challenge(
     db_pool: &PgPool,
     page_index: u8,
     page_size: u8,
+    keyword: Option<String>,
 ) -> Result<Vec<Challenge>, sqlx::Error> {
-    let data = sqlx::query_as_unchecked!(
-        Challenge,
-        r#"SELECT * FROM challenge order by created_at desc offset $1 fetch next $2 rows only"#,
-        (page_size * page_index) as i64,
-        page_size as i64
-    )
-    .fetch_all(db_pool)
-    .await?;
+    // let query = match keyword{
+    //     Some(string) =>
+    //     r#"SELECT * FROM challenge where title like '%$1%' order by created_at desc offset $2 fetch next $3 rows only"#,
+    // }
+    // let data = sqlx::query_as_unchecked!(
+    //     Challenge,
+    //     keyword,
+    //     (page_size * page_index) as i64,
+    //     page_size as i64
+    // )
+    // .fetch_all(db_pool)
+    // .await?;
 
-    Ok(data)
+    // Ok(data)
+    let mut query_builder: QueryBuilder<'_, Postgres> = QueryBuilder::new("");
+    query_builder.push("select * from challenge");
+    match keyword {
+        Some(string) => {
+            query_builder.push(" where title like '%$1%'");
+            query_builder.push_bind(string);
+        }
+        None => (),
+    }
+
+    query_builder.push(" order by created_at offset $2 fetch next $3 rows only");
+    query_builder.push_bind((page_index * page_size) as i8);
+    query_builder.push_bind(page_size as i8);
+
+    let query = query_builder.build_query_as::<Challenge>();
+    let result = query.fetch_all(db_pool).await?;
+
+    Ok(result)
 }

@@ -1,4 +1,7 @@
-use crate::{persistent::challenge_persistent, request::paging::Paging};
+use crate::{
+    persistent::challenge_persistent,
+    request::paging::{Paging, PagingWithKeyword},
+};
 use actix_web::{
     web::{self, Data},
     HttpResponse, ResponseError,
@@ -26,13 +29,16 @@ impl ResponseError for GetAllChallengeError {
 }
 
 pub async fn get_all_challenges(
-    paging: web::Query<Paging>,
+    paging: web::Query<PagingWithKeyword>,
     db_pool: Data<PgPool>,
 ) -> Result<HttpResponse, GetAllChallengeError> {
+    let paging = paging.into_inner();
+
     let challenges = challenge_persistent::query_all_challenge(
         db_pool.get_ref(),
-        paging.page_index.inner(),
-        paging.page_size.inner(),
+        paging.page_index,
+        paging.page_size,
+        paging.keyword,
     )
     .await
     .context("Failed to get challenges from db")?;

@@ -4,6 +4,7 @@ mod routes;
 use config::{Config, ConfigError, File};
 use configs::global::AppConfig;
 use routes::challenge_route::{add_new_challenge, get_all_challenges};
+use routes::healthcheck_route;
 use routes::suggestion_route::{self, make_suggestion};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 mod configs;
@@ -26,6 +27,10 @@ pub fn run(db_pool: PgPool) -> std::io::Result<Server> {
             .route(&get_route("challenges"), web::get().to(get_all_challenges))
             .route(&get_route("challenges"), web::post().to(add_new_challenge))
             .route(&get_route("suggestions"), web::post().to(make_suggestion))
+            .route(
+                &get_route("health_check_db"),
+                web::get().to(healthcheck_route::health_check),
+            )
             .app_data(data_db_pool.clone());
         app
     })

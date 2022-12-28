@@ -1,17 +1,20 @@
 use actix_cors::Cors;
-use actix_web::{dev::Server, middleware::Logger, web, App, HttpResponse, HttpServer};
+use actix_web::{dev::Server, middleware::Logger, web, App, HttpServer};
 mod routes;
 use config::{Config, ConfigError, File};
 use configs::global::AppConfig;
+use routes::auth_route::login;
 use routes::challenge_route::{add_new_challenge, get_all_challenges};
-use routes::healthcheck_route;
-use routes::suggestion_route::{self, make_suggestion};
+use routes::healthcheck_route::{self, health_check};
+use routes::journal_route::{add_journal, get_journal};
+use routes::suggestion_route::make_suggestion;
 use sqlx::{postgres::PgPoolOptions, PgPool};
 mod configs;
 mod domains;
 mod misc;
 mod persistent;
 mod request;
+mod responses;
 
 pub fn run(db_pool: PgPool) -> std::io::Result<Server> {
     let data_db_pool = web::Data::new(db_pool);
@@ -31,6 +34,9 @@ pub fn run(db_pool: PgPool) -> std::io::Result<Server> {
                 &get_route("health_check_db"),
                 web::get().to(healthcheck_route::health_check),
             )
+            .route(&get_route("auth/login"), web::post().to(login))
+            .route(&get_route("journals"), web::post().to(add_journal))
+            .route(&get_route("journals/{id}"), web::get().to(get_journal))
             .app_data(data_db_pool.clone());
         app
     })
@@ -46,10 +52,6 @@ pub fn get_configurations(file_name: &str) -> Result<AppConfig, ConfigError> {
         .build()?;
 
     Ok(config.try_deserialize::<AppConfig>()?)
-}
-
-pub async fn health_check() -> actix_web::HttpResponse {
-    HttpResponse::Ok().finish()
 }
 
 pub fn get_route(route: &str) -> String {

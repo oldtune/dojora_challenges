@@ -1,5 +1,22 @@
 {
   "db": "PostgreSQL",
+  "30e6df72683e0f4ac3576459c077452d139bb7cc5fefa3cda4cd5148adb5311f": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Int8",
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO Journals(ID, CONTENT, CREATED_BY, CREATED_AT, UPDATED_BY, UPDATED_AT)\n        VALUES ($1, $2, $3, $4, $5, $6)"
+  },
   "59e88c48cf78f823968d389c67287b90b5e28f45f27f150e6721e18009f05c9a": {
     "describe": {
       "columns": [],
@@ -14,6 +31,56 @@
       }
     },
     "query": "INSERT INTO suggestion (id, title, description, created_at) values($1,$2,$3,$4)"
+  },
+  "7c8500267271a9afde7b69a46cf3421c8f5879443ae119c177aab4ad1a574ba2": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "content",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Int8"
+        },
+        {
+          "name": "created_by",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 4,
+          "type_info": "Int8"
+        },
+        {
+          "name": "updated_by",
+          "ordinal": 5,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "SELECT * FROM JOURNALS WHERE ID = $1"
   },
   "a2c835da708c48a8ca625499654c9284835c1c294b4ab060d40389deaa6a79e4": {
     "describe": {

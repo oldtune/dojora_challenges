@@ -1,15 +1,14 @@
 use actix_web::{web::Data, HttpResponse};
-use anyhow::Ok;
 use sqlx::PgPool;
 
-pub async fn health_check(db_pool: Data<PgPool>) -> HttpResponse {
-    let is_ok = sqlx::query(r#"select 1"#)
-        .execute(db_pool.get_ref())
-        .await
-        .is_ok();
+use crate::persistent::db_ping;
 
-    if is_ok {
+pub async fn health_check(db_pool: Data<PgPool>) -> HttpResponse {
+    let db_check_result = db_ping::ping_db(db_pool.get_ref()).await;
+
+    if db_check_result.is_ok() {
         return HttpResponse::Ok().finish();
     }
-    HttpResponse::BadRequest().finish()
+
+    HttpResponse::BadRequest().json("Db is dead")
 }

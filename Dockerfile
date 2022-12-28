@@ -1,6 +1,7 @@
 FROM rust:latest as builder
 WORKDIR /usr/src/app
 COPY . .
+ARG SQLX_OFFLINE=true
 RUN cargo install --path .
 
 FROM alpine:latest

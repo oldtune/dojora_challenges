@@ -36,7 +36,7 @@ pub async fn query_all_challenge(
     };
 
     query_builder.push(" order by created_at offset ");
-    query_builder.push_bind((page_index * page_size) as i32);
+    query_builder.push_bind(page_index as i32 * page_size as i32);
     query_builder.push(" fetch next ");
     query_builder.push_bind(page_size as i32);
     query_builder.push(" rows only");

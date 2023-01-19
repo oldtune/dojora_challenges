@@ -54,3 +54,11 @@ pub async fn get_journal(
 
     return Ok(HttpResponse::Ok().json(journal));
 }
+
+pub async fn get_brief_journals(db: Data<PgPool>) -> Result<HttpResponse, ApplicationError> {
+    let journal_briefs = persistent::journal_persistent::get_journal_briefs(db.get_ref())
+        .await
+        .context("Failed to get journal brief")?;
+
+    return Ok(HttpResponse::Ok().json(journal_briefs));
+}

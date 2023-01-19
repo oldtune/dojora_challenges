@@ -6,7 +6,7 @@ use configs::global::AppConfig;
 use routes::auth_route::login;
 use routes::challenge_route::{add_new_challenge, get_all_challenges};
 use routes::healthcheck_route::{self, health_check};
-use routes::journal_route::{add_journal, get_journal};
+use routes::journal_route::{add_journal, get_brief_journals, get_journal};
 use routes::suggestion_route::make_suggestion;
 use sqlx::{postgres::PgPoolOptions, PgPool};
 mod configs;
@@ -36,6 +36,10 @@ pub fn run(db_pool: PgPool) -> std::io::Result<Server> {
             )
             .route(&get_route("auth/login"), web::post().to(login))
             .route(&get_route("journals"), web::post().to(add_journal))
+            .route(
+                &get_route("journals/briefs"),
+                web::get().to(get_brief_journals),
+            )
             .route(&get_route("journals/{id}"), web::get().to(get_journal))
             .app_data(data_db_pool.clone());
         app

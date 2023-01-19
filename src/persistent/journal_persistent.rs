@@ -13,6 +13,13 @@ pub struct Journal {
     pub updated_by: Author,
 }
 
+#[derive(Serialize)]
+pub struct JournalBrief {
+    pub id: uuid::Uuid,
+    #[serde(rename(serialize = "date"))]
+    pub created_at: i64,
+}
+
 impl Journal {
     pub fn new(
         id: uuid::Uuid,
@@ -77,4 +84,13 @@ pub async fn get_journal(id: uuid::Uuid, db: &PgPool) -> Result<Journal, sqlx::E
         .await?;
 
     Ok(journal)
+}
+
+pub async fn get_journal_briefs(db: &PgPool) -> Result<Vec<JournalBrief>, sqlx::Error> {
+    let journal_briefs =
+        sqlx::query_as_unchecked!(JournalBrief, "SELECT Id, CREATED_AT FROM JOURNALS")
+            .fetch_all(db)
+            .await;
+
+    return journal_briefs;
 }

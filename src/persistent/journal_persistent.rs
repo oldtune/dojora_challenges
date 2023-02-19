@@ -5,6 +5,7 @@ use super::persistent_audit_metadata::Author;
 
 #[derive(Serialize)]
 pub struct Journal {
+    pub userid: uuid::Uuid,
     pub id: uuid::Uuid,
     pub content: String,
     pub created_at: i64,
@@ -23,6 +24,7 @@ pub struct JournalBrief {
 impl Journal {
     pub fn new(
         id: uuid::Uuid,
+        userid: uuid::Uuid,
         content: String,
         created_at: i64,
         created_by: &str,
@@ -30,6 +32,7 @@ impl Journal {
         updated_by: &str,
     ) -> Self {
         return Self {
+            userid,
             id,
             content,
             created_at,
@@ -48,9 +51,11 @@ impl FromRow<'_, PgRow> for Journal {
         let created_by: String = row.get("created_by");
         let updated_at = row.get("updated_at");
         let updated_by: String = row.get("updated_by");
+        let user_id: uuid::Uuid = row.get("userid");
 
         Ok(Journal {
             content: content,
+            userid: user_id,
             created_at: created_at,
             created_by: Author::from(&created_by as &str),
             id: id,
@@ -86,11 +91,34 @@ pub async fn get_journal(id: uuid::Uuid, db: &PgPool) -> Result<Journal, sqlx::E
     Ok(journal)
 }
 
-pub async fn get_journal_briefs(db: &PgPool) -> Result<Vec<JournalBrief>, sqlx::Error> {
-    let journal_briefs =
-        sqlx::query_as_unchecked!(JournalBrief, "SELECT Id, CREATED_AT FROM JOURNALS")
-            .fetch_all(db)
-            .await;
+pub async fn get_journal_briefs(
+    id: uuid::Uuid,
+    db: &PgPool,
+) -> Result<Vec<JournalBrief>, sqlx::Error> {
+    let journal_briefs = sqlx::query_as_unchecked!(
+        JournalBrief,
+        "SELECT Id, CREATED_AT FROM JOURNALS WHERE USERID = $1",
+        id
+    )
+    .fetch_all(db)
+    .await;
 
     return journal_briefs;
+}
+
+pub async fn get_journal_detail(
+    id: uuid::Uuid,
+    user_id: uuid::Uuid,
+    db: &PgPool,
+) -> Result<Journal, sqlx::Error> {
+    let journal = sqlx::query_as_unchecked!(
+        Journal,
+        r#"SELECT * FROM JOURNALS WHERE ID = $1 AND USERID = $2"#,
+        id,
+        user_id
+    )
+    .fetch_one(db)
+    .await?;
+
+    Ok(journal)
 }

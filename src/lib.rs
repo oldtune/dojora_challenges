@@ -3,14 +3,12 @@ use actix_web::{dev::Server, middleware::Logger, web, App, HttpServer};
 mod routes;
 use config::{Config, ConfigError, File};
 use configs::global::AppConfig;
-use routes::auth_route::login;
-use routes::challenge_route::{add_new_challenge, get_all_challenges};
-use routes::healthcheck_route::{self, health_check};
-use routes::journal_route::{add_journal, get_brief_journals, get_journal};
-use routes::suggestion_route::make_suggestion;
+use routes::auth_route::{register_user, test_auth, user_login};
+use routes::journal_route::{add_journal, get_brief_journals, get_journal, get_journal_detail};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 mod configs;
 mod domains;
+mod extractors;
 mod misc;
 mod persistent;
 mod request;
@@ -26,21 +24,18 @@ pub fn run(db_pool: PgPool) -> std::io::Result<Server> {
         let app = App::new()
             .wrap(Logger::new("%a %{User-Agent}"))
             .wrap(cors)
-            .route(&get_route("health_check"), web::get().to(health_check))
-            .route(&get_route("challenges"), web::get().to(get_all_challenges))
-            .route(&get_route("challenges"), web::post().to(add_new_challenge))
-            .route(&get_route("suggestions"), web::post().to(make_suggestion))
-            .route(
-                &get_route("health_check_db"),
-                web::get().to(healthcheck_route::health_check),
-            )
-            .route(&get_route("auth/login"), web::post().to(login))
             .route(&get_route("journals"), web::post().to(add_journal))
             .route(
                 &get_route("journals/briefs"),
                 web::get().to(get_brief_journals),
             )
-            .route(&get_route("journals/{id}"), web::get().to(get_journal))
+            .route(
+                &get_route("journals/{id}"),
+                web::get().to(get_journal_detail),
+            )
+            .route(&get_route("auth/register"), web::post().to(register_user))
+            .route(&get_route("auth/login"), web::post().to(user_login))
+            .route(&get_route("auth/test-token"), web::get().to(test_auth))
             .app_data(data_db_pool.clone());
         app
     })

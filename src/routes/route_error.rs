@@ -8,6 +8,8 @@ pub enum ApplicationError {
     InternalFailure(#[from] anyhow::Error),
     #[error("{0}")]
     BadRequest(String),
+    #[error("Authorization denied")]
+    Authorization,
 }
 
 impl From<&str> for ApplicationError {
@@ -21,6 +23,7 @@ impl ResponseError for ApplicationError {
         match self {
             Self::BadRequest(_) => StatusCode::BAD_REQUEST,
             Self::InternalFailure(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Authorization => StatusCode::UNAUTHORIZED,
         }
     }
 }

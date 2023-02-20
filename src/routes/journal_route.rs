@@ -29,6 +29,7 @@ pub async fn add_journal(
     journal: Json<JournalCreateModel>,
     db: Data<PgPool>,
 ) -> Result<impl Responder, ApplicationError> {
+    println!("user id is {}", user.id);
     let id = uuid::Uuid::new_v4();
     let journal = Journal::new(
         id,

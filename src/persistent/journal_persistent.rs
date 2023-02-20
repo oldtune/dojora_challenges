@@ -68,14 +68,15 @@ impl FromRow<'_, PgRow> for Journal {
 pub async fn add_new_journal(journal: &Journal, db: &PgPool) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
-        INSERT INTO Journals(ID, CONTENT, CREATED_BY, CREATED_AT, UPDATED_BY, UPDATED_AT)
-        VALUES ($1, $2, $3, $4, $5, $6)"#,
+        INSERT INTO Journals(ID, CONTENT, CREATED_BY, CREATED_AT, UPDATED_BY, UPDATED_AT, USERID)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)"#,
         journal.id,
         journal.content,
         journal.created_by.as_ref(),
         journal.created_at as i64,
         journal.updated_by.as_ref(),
-        journal.updated_at as i64
+        journal.updated_at as i64,
+        journal.userid
     )
     .execute(db)
     .await?;

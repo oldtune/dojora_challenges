@@ -21,8 +21,9 @@ pub fn run(db_pool: PgPool) -> std::io::Result<Server> {
             .allow_any_header()
             .allow_any_method()
             .allow_any_origin();
+
         let app = App::new()
-            .wrap(Logger::new("%a %{User-Agent}"))
+            .wrap(Logger::default())
             .wrap(cors)
             .route(&get_route("journals"), web::post().to(add_journal))
             .route(

@@ -11,6 +11,22 @@ pub struct User {
     pub password: String,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct UserRegister {
+    pub username: String,
+    pub password: String,
+}
+
+impl From<UserRegister> for User {
+    fn from(value: UserRegister) -> Self {
+        return Self {
+            id: uuid::Uuid::new_v4(),
+            username: value.username,
+            password: value.password,
+        };
+    }
+}
+
 pub async fn save_user(user: &User, db: &PgPool) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"insert into appuser values($1, $2, $3)"#,

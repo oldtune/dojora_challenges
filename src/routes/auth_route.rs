@@ -9,7 +9,7 @@ use sqlx::PgPool;
 
 use crate::{
     extractors::auth_extractor::AuthorisedUser,
-    persistent::user_persistent::{self, User},
+    persistent::user_persistent::{self, User, UserRegister},
 };
 
 use super::route_error::ApplicationError;
@@ -60,7 +60,7 @@ pub async fn user_login(
 }
 
 pub async fn register_user(
-    user: Json<User>,
+    user: Json<UserRegister>,
     db: Data<PgPool>,
 ) -> Result<impl Responder, ApplicationError> {
     let user = user.into_inner();
@@ -72,7 +72,7 @@ pub async fn register_user(
         return Err(ApplicationError::from("User existed"));
     }
 
-    user_persistent::save_user(&user, db.get_ref())
+    user_persistent::save_user(&user.into(), db.get_ref())
         .await
         .context("Failed to save user")?;
     Ok(HttpResponse::Ok().finish())
